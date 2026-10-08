@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FoodExpress - Online Food Ordering</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f5f6fa;
+    color: #222;
+    transition: 0.3s;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* AUTH */
+
+#authPage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ff512f, #dd2476);
+}
+
+.auth-box {
+    width: 380px;
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.25);
+}
+
+.logo {
+    color: #ff4d2d;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.auth-box h2 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.auth-box input {
+    width: 100%;
+    padding: 13px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.password-box {
+    position: relative;
+}
+
+.password-box span {
+    position: absolute;
+    right: 12px;
+    top: 18px;
+    cursor: pointer;
+}
+
+.primary-btn {
+    width: 100%;
+    padding: 13px;
+    background: #ff4d2d;
+    color: white;
+    border-radius: 8px;
+    margin-top: 12px;
+    font-size: 16px;
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.auth-switch span {
+    color: #ff4d2d;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* APP */
+
+#app {
+    min-height: 100vh;
+}
+
+.navbar {
+    height: 65px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.nav-logo {
+    color: #ff4d2d;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-btn {
+    background: transparent;
+    font-size: 20px;
+}
+
+.cart-btn {
+    position: relative;
+}
+
+.cart-count {
+    position: absolute;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    font-size: 11px;
+    padding: 3px 6px;
+    top: -8px;
+    right: -10px;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    width: 220px;
+    position: fixed;
+    top: 65px;
+    bottom: 0;
+    background: #171717;
+    color: white;
+    padding: 20px 10px;
+}
+
+.sidebar button {
+    width: 100%;
+    text-align: left;
+    padding: 13px;
+    margin: 3px 0;
+    background: transparent;
+    color: white;
+    border-radius: 8px;
+}
+
+.sidebar button:hover {
+    background: #ff4d2d;
+}
+
+/* CONTENT */
+
+.content {
+    margin-left: 220px;
+    padding: 30px;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+/* HERO */
+
+.hero {
+    background: linear-gradient(120deg,#ff512f,#f09819);
+    color: white;
+    border-radius: 20px;
+    padding: 35px;
+    margin-bottom: 25px;
+}
+
+.hero h1 {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 17px;
+}
+
+/* SEARCH */
+
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 13px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.search-bar button {
+    background: #ff4d2d;
+    color: white;
+    padding: 0 20px;
+    border-radius: 8px;
+}
+
+/* CATEGORIES */
+
+.categories {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin-bottom: 25px;
+}
+
+.category {
+    background: white;
+    padding: 12px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.category.active {
+    background: #ff4d2d;
+    color: white;
+}
+
+/* FOOD */
+
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(230px,1fr));
+    gap: 20px;
+}
+
+.food-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+    transition: .2s;
+}
+
+.food-card:hover {
+    transform: translateY(-4px);
+}
+
+.food-img {
+    height: 150px;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 65px;
+}
+
+.food-info {
+    padding: 15px;
+}
+
+.food-info h3 {
+    margin-bottom: 5px;
+}
+
+.rating {
+    color: #f39c12;
+    margin: 6px 0;
+}
+
+.food-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price {
+    color: #ff4d2d;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.add-btn {
+    background: #ff4d2d;
+    color: white;
+    padding: 8px 13px;
+    border-radius: 7px;
+}
+
+.favorite {
+    float: right;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* CART */
+
+.cart-item {
+    background: white;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.qty button {
+    padding: 5px 10px;
+    margin: 0 5px;
+}
+
+.cart-summary {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.total {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* ORDERS */
+
+.order-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.status {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 15px;
+    background: #fff3cd;
+    color: #856404;
+    margin-top: 10px;
+}
+
+/* DASHBOARD */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.stat {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.06);
+}
+
+.stat h3 {
+    color: #777;
+}
+
+.stat p {
+    font-size: 28px;
+    color: #ff4d2d;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+/* PROFILE */
+
+.profile-box {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    max-width: 600px;
+}
+
+.profile-box input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+/* MODAL */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-box {
+    background: white;
+    width: 400px;
+    max-width: 90%;
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.modal-box input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+}
+
+.close {
+    float: right;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+/* DARK MODE */
+
+body.dark {
+    background: #121212;
+    color: white;
+}
+
+body.dark .navbar,
+body.dark .food-card,
+body.dark .category,
+body.dark .cart-item,
+body.dark .cart-summary,
+body.dark .order-card,
+body.dark .stat,
+body.dark .profile-box,
+body.dark .modal-box {
+    background: #1e1e1e;
+    color: white;
+}
+
+body.dark input {
+    background: #2b2b2b;
+    color: white;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:800px) {
+
+    .sidebar {
+        width: 70px;
+    }
+
+    .sidebar button {
+        font-size: 0;
+        text-align: center;
+    }
+
+    .sidebar button::first-letter {
+        font-size: 20px;
+    }
+
+    .content {
+        margin-left: 70px;
+        padding: 15px;
+    }
+
+    .hero h1 {
+        font-size: 25px;
+    }
+
+    .navbar {
+        padding: 0 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN / SIGNUP -->
+
+<section id="authPage">
+
+<div class="auth-box">
+
+<div class="logo">🍔 FoodExpress</div>
+
+<div id="loginForm">
+
+<h2>Welcome Back</h2>
+
+<input id="loginEmail" type="email" placeholder="Email">
+
+<div class="password-box">
+<input id="loginPassword" type="password" placeholder="Password">
+<span onclick="togglePassword('loginPassword')">👁️</span>
+</div>
+
+<button class="primary-btn" onclick="login()">Login</button>
+
+<p class="auth-switch">
+Don't have an account?
+<span onclick="showSignup()">Sign Up</span>
+</p>
+
+<p style="text-align:center;margin-top:15px;font-size:13px">
+Demo: admin@food.com / admin123
+</p>
+
+</div>
+
+<div id="signupForm" class="hidden">
+
+<h2>Create Account</h2>
+
+<input id="signupName" placeholder="Full Name">
+<input id="signupEmail" type="email" placeholder="Email">
+
+<div class="password-box">
+<input id="signupPassword" type="password" placeholder="Password">
+<span onclick="togglePassword('signupPassword')">👁️</span>
+</div>
+
+<button class="primary-btn" onclick="signup()">Create Account</button>
+
+<p class="auth-switch">
+Already have an account?
+<span onclick="showLogin()">Login</span>
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- APPLICATION -->
+
+<section id="app" class="hidden">
+
+<nav class="navbar">
+
+<div class="nav-logo">🍔 FoodExpress</div>
+
+<div class="nav-actions">
+
+<button class="nav-btn" onclick="toggleDark()">🌙</button>
+
+<button class="nav-btn cart-btn" onclick="showPage('cart')">
+🛒
+<span class="cart-count" id="cartCount">0</span>
+</button>
+
+<span id="userName"></span>
+
+</div>
+
+</nav>
+
+
+<aside class="sidebar">
+
+<button onclick="showPage('home')">🏠 Home</button>
+
+<button onclick="showPage('cart')">🛒 Cart</button>
+
+<button onclick="showPage('orders')">📦 Orders</button>
+
+<button onclick="showPage('favorites')">❤️ Favorites</button>
+
+<button onclick="showPage('profile')">👤 Profile</button>
+
+<button onclick="showPage('notifications')">🔔 Notifications</button>
+
+<button onclick="showPage('admin')">📊 Admin</button>
+
+<button onclick="logout()">🚪 Logout</button>
+
+</aside>
+
+
+<main class="content">
+
+<!-- HOME -->
+
+<div id="home" class="page active">
+
+<div class="hero">
+
+<h1>Delicious food, delivered fast! 🍕</h1>
+
+<p>Order your favorite meals from FoodExpress.</p>
+
+</div>
+
+<div class="search-bar">
+
+<input id="searchInput"
+placeholder="Search pizza, burger, biryani..."
+oninput="renderFoods()">
+
+<button onclick="renderFoods()">Search</button>
+
+</div>
+
+<div class="categories">
+
+<div class="category active" onclick="filterCategory('All',this)">All</div>
+<div class="category" onclick="filterCategory('Pizza',this)">🍕 Pizza</div>
+<div class="category" onclick="filterCategory('Burger',this)">🍔 Burger</div>
+<div class="category" onclick="filterCategory('Biryani',this)">🍛 Biryani</div>
+<div class="category" onclick="filterCategory('Drinks',this)">🥤 Drinks</div>
+<div class="category" onclick="filterCategory('Dessert',this)">🍰 Dessert</div>
+
+</div>
+
+<div class="food-grid" id="foodGrid"></div>
+
+</div>
+
+
+<!-- CART -->
+
+<div id="cart" class="page">
+
+<h1>🛒 Your Cart</h1>
+
+<div id="cartItems"></div>
+
+<div class="cart-summary">
+
+<div class="summary-row">
+<span>Subtotal</span>
+<span id="subtotal">₹0</span>
+</div>
+
+<div class="summary-row">
+<span>Delivery Fee</span>
+<span id="delivery">₹0</span>
+</div>
+
+<div class="summary-row">
+<span>Tax</span>
+<span id="tax">₹0</span>
+</div>
+
+<div class="summary-row total">
+<span>Total</span>
+<span id="total">₹0</span>
+</div>
+
+<input id="coupon" placeholder="Coupon code">
+
+<button class="primary-btn" onclick="applyCoupon()">Apply Coupon</button>
+
+<button class="primary-btn" onclick="checkout()">Place Order</button>
+
+</div>
+
+</div>
+
+
+<!-- ORDERS -->
+
+<div id="orders" class="page">
+
+<h1>📦 My Orders</h1>
+
+<div id="ordersList"></div>
+
+</div>
+
+
+<!-- FAVORITES -->
+
+<div id="favorites" class="page">
+
+<h1>❤️ Favorites</h1>
+
+<div class="food-grid" id="favoriteGrid"></div>
+
+</div>
+
+
+<!-- PROFILE -->
+
+<div id="profile" class="page">
+
+<h1>👤 My Profile</h1>
+
+<div class="profile-box">
+
+<input id="profileName" placeholder="Name">
+
+<input id="profileEmail" placeholder="Email">
+
+<input id="profilePhone" placeholder="Phone">
+
+<input id="profileAddress" placeholder="Delivery Address">
+
+<button class="primary-btn" onclick="saveProfile()">
+Save Profile
+</button>
+
+<br><br>
+
+<button class="primary-btn" onclick="changePassword()">
+Change Password
+</button>
+
+</div>
+
+</div>
+
+
+<!-- NOTIFICATIONS -->
+
+<div id="notifications" class="page">
+
+<h1>🔔 Notifications</h1>
+
+<div class="order-card">
+
+<h3>🎉 Welcome to FoodExpress!</h3>
+<p>Use our latest offers to save money on your orders.</p>
+
+</div>
+
+<div class="order-card">
+
+<h3>🚴 Fast Delivery</h3>
+<p>Your food can be delivered quickly to your location.</p>
+
+</div>
+
+<div class="order-card">
+
+<h3>🔥 Today's Offer</h3>
+<p>Use coupon <b>FOOD10</b> to get 10% off.</p>
+
+</div>
+
+</div>
+
+
+<!-- ADMIN -->
+
+<div id="admin" class="page">
+
+<h1>📊 Admin Dashboard</h1>
+
+<div class="stats">
+
+<div class="stat">
+<h3>Total Orders</h3>
+<p id="statOrders">0</p>
+</div>
+
+<div class="stat">
+<h3>Total Revenue</h3>
+<p id="statRevenue">₹0</p>
+</div>
+
+<div class="stat">
+<h3>Food Items</h3>
+<p id="statFoods">0</p>
+</div>
+
+<div class="stat">
+<h3>Customers</h3>
+<p id="statCustomers">0</p>
+</div>
+
+</div>
+
+<h2>Recent Orders</h2>
+
+<div id="adminOrders"></div>
+
+</div>
+
+</main>
+
+</section>
+
+
+<!-- PAYMENT MODAL -->
+
+<div id="paymentModal" class="modal hidden">
+
+<div class="modal-box">
+
+<span class="close" onclick="closeModal()">×</span>
+
+<h2>💳 Payment</h2>
+
+<p style="margin:15px 0">
+Choose payment method
+</p>
+
+<select id="paymentMethod" style="width:100%;padding:12px">
+
+<option>UPI</option>
+<option>Credit Card</option>
+<option>Debit Card</option>
+<option>Cash on Delivery</option>
+
+</select>
+
+<button class="primary-btn" onclick="completeOrder()">
+Pay & Place Order
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+let foods = [
+
+{
+id:1,
+name:"Margherita Pizza",
+category:"Pizza",
+price:299,
+rating:4.8,
+emoji:"🍕"
+},
+
+{
+id:2,
+name:"Chicken Burger",
+category:"Burger",
+price:199,
+rating:4.6,
+emoji:"🍔"
+},
+
+{
+id:3,
+name:"Chicken Biryani",
+category:"Biryani",
+price:249,
+rating:4.9,
+emoji:"🍛"
+},
+
+{
+id:4,
+name:"Veg Biryani",
+category:"Biryani",
+price:199,
+rating:4.5,
+emoji:"🍚"
+},
+
+{
+id:5,
+name:"French Fries",
+category:"Burger",
+price:129,
+rating:4.4,
+emoji:"🍟"
+},
+
+{
+id:6,
+name:"Cold Coffee",
+category:"Drinks",
+price:99,
+rating:4.3,
+emoji:"🥤"
+},
+
+{
+id:7,
+name:"Chocolate Cake",
+category:"Dessert",
+price:179,
+rating:4.7,
+emoji:"🍰"
+},
+
+{
+id:8,
+name:"Pepperoni Pizza",
+category:"Pizza",
+price:349,
+rating:4.8,
+emoji:"🍕"
+},
+
+{
+id:9,
+name:"Mango Juice",
+category:"Drinks",
+price:89,
+rating:4.2,
+emoji:"🥭"
+},
+
+{
+id:10,
+name:"Ice Cream",
+category:"Dessert",
+price:119,
+rating:4.6,
+emoji:"🍨"
+}
+
+];
+
+
+let cart = JSON.parse(localStorage.getItem("foodCart")) || [];
+
+let orders = JSON.parse(localStorage.getItem("foodOrders")) || [];
+
+let favorites = JSON.parse(localStorage.getItem("foodFavorites")) || [];
+
+let users = JSON.parse(localStorage.getItem("foodUsers")) || [
+
+{
+name:"Admin",
+email:"admin@food.com",
+password:"admin123",
+phone:"",
+address:""
+}
+
+];
+
+let currentUser =
+JSON.parse(localStorage.getItem("foodCurrentUser")) || null;
+
+let currentCategory = "All";
+
+let discount = 0;
+
+
+/* AUTH */
+
+function showSignup(){
+
+document.getElementById("loginForm").classList.add("hidden");
+
+document.getElementById("signupForm").classList.remove("hidden");
+
+}
+
+
+function showLogin(){
+
+document.getElementById("signupForm").classList.add("hidden");
+
+document.getElementById("loginForm").classList.remove("hidden");
+
+}
+
+
+function togglePassword(id){
+
+let input = document.getElementById(id);
+
+input.type =
+input.type === "password"
+? "text"
+: "password";
+
+}
+
+
+function signup(){
+
+let name =
+document.getElementById("signupName").value.trim();
+
+let email =
+document.getElementById("signupEmail").value.trim();
+
+let password =
+document.getElementById("signupPassword").value;
+
+if(!name || !email || !password){
+
+alert("Please fill all fields.");
+
+return;
+
+}
+
+if(users.some(u => u.email === email)){
+
+alert("Account already exists.");
+
+return;
+
+}
+
+users.push({
+name,
+email,
+password,
+phone:"",
+address:""
+});
+
+localStorage.setItem("foodUsers",JSON.stringify(users));
+
+alert("Account created successfully!");
+
+showLogin();
+
+}
+
+
+function login(){
+
+let email =
+document.getElementById("loginEmail").value.trim();
+
+let password =
+document.getElementById("loginPassword").value;
+
+let user =
+users.find(u =>
+u.email === email &&
+u.password === password
+);
+
+if(!user){
+
+alert("Invalid email or password.");
+
+return;
+
+}
+
+currentUser = user;
+
+localStorage.setItem(
+"foodCurrentUser",
+JSON.stringify(user)
+);
+
+startApp();
+
+}
+
+
+function logout(){
+
+currentUser = null;
+
+localStorage.removeItem("foodCurrentUser");
+
+document.getElementById("app")
+.classList.add("hidden");
+
+document.getElementById("authPage")
+.classList.remove("hidden");
+
+}
+
+
+/* APP START */
+
+function startApp(){
+
+if(!currentUser){
+
+return;
+
+}
+
+document.getElementById("authPage")
+.classList.add("hidden");
+
+document.getElementById("app")
+.classList.remove("hidden");
+
+document.getElementById("userName")
+.innerText =
+"Hi, " + currentUser.name;
+
+loadProfile();
+
+renderFoods();
+
+renderCart();
+
+renderOrders();
+
+renderFavorites();
+
+updateAdmin();
+
+}
+
+
+/* NAVIGATION */
+
+function showPage(page){
+
+document.querySelectorAll(".page")
+.forEach(p => p.classList.remove("active"));
+
+document.getElementById(page)
+.classList.add("active");
+
+if(page === "cart")
+renderCart();
+
+if(page === "orders")
+renderOrders();
+
+if(page === "favorites")
+renderFavorites();
+
+if(page === "admin")
+updateAdmin();
+
+}
+
+
+/* FOOD */
+
+function renderFoods(){
+
+let search =
+document.getElementById("searchInput")
+.value.toLowerCase();
+
+let list = foods.filter(food => {
+
+let matchesCategory =
+currentCategory === "All" ||
+food.category === currentCategory;
+
+let matchesSearch =
+food.name.toLowerCase()
+.includes(search);
+
+return matchesCategory && matchesSearch;
+
+});
+
+let html = "";
+
+list.forEach(food => {
+
+let fav =
+favorites.includes(food.id)
+? "❤️"
+: "🤍";
+
+html += `
+
+<div class="food-card">
+
+<div class="food-img">
+${food.emoji}
+</div>
+
+<div class="food-info">
+
+<span class="favorite"
+onclick="toggleFavorite(${food.id})">
+${fav}
+</span>
+
+<h3>${food.name}</h3>
+
+<div class="rating">
+⭐ ${food.rating}
+</div>
+
+<div class="food-bottom">
+
+<span class="price">
+₹${food.price}
+</span>
+
+<button class="add-btn"
+onclick="addToCart(${food.id})">
+Add +
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("foodGrid")
+.innerHTML =
+html || "<p>No food found.</p>";
+
+}
+
+
+function filterCategory(category,element){
+
+currentCategory = category;
+
+document.querySelectorAll(".category")
+.forEach(c =>
+c.classList.remove("active")
+);
+
+element.classList.add("active");
+
+renderFoods();
+
+}
+
+
+/* CART */
+
+function addToCart(id){
+
+let item =
+cart.find(x => x.id === id);
+
+if(item){
+
+item.qty++;
+
+}else{
+
+cart.push({
+id:id,
+qty:1
+});
+
+}
+
+saveData();
+
+updateCartCount();
+
+alert("Food added to cart!");
+
+}
+
+
+function updateCartCount(){
+
+let count =
+cart.reduce((sum,item) =>
+sum + item.qty,0);
+
+document.getElementById("cartCount")
+.innerText = count;
+
+}
+
+
+function renderCart(){
+
+let container =
+document.getElementById("cartItems");
+
+if(cart.length === 0){
+
+container.innerHTML =
+"<p>Your cart is empty 🛒</p>";
+
+updateTotals();
+
+return;
+
+}
+
+let html = "";
+
+cart.forEach(item => {
+
+let food =
+foods.find(f => f.id === item.id);
+
+if(!food) return;
+
+html += `
+
+<div class="cart-item">
+
+<div>
+
+<strong>${food.emoji} ${food.name}</strong>
+
+<p>₹${food.price} each</p>
+
+</div>
+
+<div class="qty">
+
+<button onclick="changeQty(${food.id},-1)">
+−
+</button>
+
+${item.qty}
+
+<button onclick="changeQty(${food.id},1)">
++
+</button>
+
+<button onclick="removeCart(${food.id})">
+🗑️
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+container.innerHTML = html;
+
+updateTotals();
+
+updateCartCount();
+
+}
+
+
+function changeQty(id,value){
+
+let item =
+cart.find(x => x.id === id);
+
+if(!item) return;
+
+item.qty += value;
+
+if(item.qty <= 0){
+
+cart =
+cart.filter(x => x.id !== id);
+
+}
+
+saveData();
+
+renderCart();
+
+}
+
+
+function removeCart(id){
+
+cart =
+cart.filter(x => x.id !== id);
+
+saveData();
+
+renderCart();
+
+}
+
+
+function updateTotals(){
+
+let subtotal =
+cart.reduce((sum,item) => {
+
+let food =
+foods.find(f => f.id === item.id);
+
+return sum +
+(food ? food.price * item.qty : 0);
+
+},0);
+
+let delivery =
+subtotal > 0 ? 40 : 0;
+
+let tax =
+subtotal * 0.05;
+
+let discountAmount =
+subtotal * discount;
+
+let total =
+subtotal +
+delivery +
+tax -
+discountAmount;
+
+document.getElementById("subtotal")
+.innerText = "₹" + subtotal.toFixed(2);
+
+document.getElementById("delivery")
+.innerText = "₹" + delivery;
+
+document.getElementById("tax")
+.innerText = "₹" + tax.toFixed(2);
+
+document.getElementById("total")
+.innerText = "₹" + Math.max(total,0).toFixed(2);
+
+}
+
+
+function applyCoupon(){
+
+let code =
+document.getElementById("coupon")
+.value.toUpperCase();
+
+if(code === "FOOD10"){
+
+discount = 0.10;
+
+alert("10% discount applied!");
+
+}else{
+
+discount = 0;
+
+alert("Invalid coupon.");
+
+}
+
+updateTotals();
+
+}
+
+
+/* CHECKOUT */
+
+function checkout(){
+
+if(cart.length === 0){
+
+alert("Your cart is empty.");
+
+return;
+
+}
+
+document.getElementById("paymentModal")
+.classList.remove("hidden");
+
+}
+
+
+function closeModal(){
+
+document.getElementById("paymentModal")
+.classList.add("hidden");
+
+}
+
+
+function completeOrder(){
+
+let subtotal =
+cart.reduce((sum,item) => {
+
+let food =
+foods.find(f => f.id === item.id);
+
+return sum +
+food.price * item.qty;
+
+},0);
+
+let total =
+subtotal +
+40 +
+subtotal * 0.05 -
+subtotal * discount;
+
+let order = {
+
+id:Date.now(),
+
+user:currentUser.email,
+
+items:[...cart],
+
+total:Math.max(total,0),
+
+date:new Date().toLocaleString(),
+
+status:"Preparing"
+
+};
+
+orders.unshift(order);
+
+cart = [];
+
+discount = 0;
+
+saveData();
+
+closeModal();
+
+renderCart();
+
+renderOrders();
+
+updateAdmin();
+
+showPage("orders");
+
+alert("🎉 Order placed successfully!");
+
+}
+
+
+/* ORDERS */
+
+function renderOrders(){
+
+let container =
+document.getElementById("ordersList");
+
+let userOrders =
+orders.filter(o =>
+o.user === currentUser.email
+);
+
+if(userOrders.length === 0){
+
+container.innerHTML =
+"<p>No orders yet.</p>";
+
+return;
+
+}
+
+let html = "";
+
+userOrders.forEach(order => {
+
+let itemNames =
+order.items.map(item => {
+
+let food =
+foods.find(f => f.id === item.id);
+
+return food
+? `${food.name} × ${item.qty}`
+: "";
+
+}).join(", ");
+
+html += `
+
+<div class="order-card">
+
+<h3>Order #${order.id}</h3>
+
+<p>${itemNames}</p>
+
+<p><b>Total:</b> ₹${order.total.toFixed(2)}</p>
+
+<p>${order.date}</p>
+
+<span class="status">
+🚴 ${order.status}
+</span>
+
+<br><br>
+
+<button class="add-btn"
+onclick="trackOrder(${order.id})">
+Track Order
+</button>
+
+</div>
+
+`;
+
+});
+
+container.innerHTML = html;
+
+}
+
+
+function trackOrder(id){
+
+let order =
+orders.find(o => o.id === id);
+
+if(!order) return;
+
+let steps =
+[
+"Order Confirmed",
+"Preparing Food",
+"Food Ready",
+"Out for Delivery",
+"Delivered"
+];
+
+let current =
+steps.indexOf(order.status);
+
+if(current === -1)
+current = 0;
+
+if(current < steps.length - 1){
+
+order.status =
+steps[current + 1];
+
+saveData();
+
+renderOrders();
+
+alert("Order status: " + order.status);
+
+}else{
+
+alert("Your order has been delivered!");
+
+}
+
+}
+
+
+/* FAVORITES */
+
+function toggleFavorite(id){
+
+if(favorites.includes(id)){
+
+favorites =
+favorites.filter(x => x !== id);
+
+}else{
+
+favorites.push(id);
+
+}
+
+saveData();
+
+renderFoods();
+
+renderFavorites();
+
+}
+
+
+function renderFavorites(){
+
+let container =
+document.getElementById("favoriteGrid");
+
+let list =
+foods.filter(f =>
+favorites.includes(f.id)
+);
+
+if(list.length === 0){
+
+container.innerHTML =
+"<p>No favorite foods yet ❤️</p>";
+
+return;
+
+}
+
+container.innerHTML =
+list.map(food => `
+
+<div class="food-card">
+
+<div class="food-img">
+${food.emoji}
+</div>
+
+<div class="food-info">
+
+<h3>${food.name}</h3>
+
+<div class="rating">
+⭐ ${food.rating}
+</div>
+
+<div class="food-bottom">
+
+<span class="price">
+₹${food.price}
+</span>
+
+<button class="add-btn"
+onclick="addToCart(${food.id})">
+Add +
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+
+/* PROFILE */
+
+function loadProfile(){
+
+document.getElementById("profileName")
+.value = currentUser.name || "";
+
+document.getElementById("profileEmail")
+.value = currentUser.email || "";
+
+document.getElementById("profilePhone")
+.value = currentUser.phone || "";
+
+document.getElementById("profileAddress")
+.value = currentUser.address || "";
+
+}
+
+
+function saveProfile(){
+
+currentUser.name =
+document.getElementById("profileName").value;
+
+currentUser.phone =
+document.getElementById("profilePhone").value;
+
+currentUser.address =
+document.getElementById("profileAddress").value;
+
+let index =
+users.findIndex(u =>
+u.email === currentUser.email
+);
+
+users[index] = currentUser;
+
+localStorage.setItem(
+"foodUsers",
+JSON.stringify(users)
+);
+
+localStorage.setItem(
+"foodCurrentUser",
+JSON.stringify(currentUser)
+);
+
+document.getElementById("userName")
+.innerText =
+"Hi, " + currentUser.name;
+
+alert("Profile updated!");
+
+}
+
+
+function changePassword(){
+
+let password =
+prompt("Enter your new password:");
+
+if(!password) return;
+
+currentUser.password = password;
+
+let index =
+users.findIndex(u =>
+u.email === currentUser.email
+);
+
+users[index] = currentUser;
+
+localStorage.setItem(
+"foodUsers",
+JSON.stringify(users)
+);
+
+localStorage.setItem(
+"foodCurrentUser",
+JSON.stringify(currentUser)
+);
+
+alert("Password changed successfully!");
+
+}
+
+
+/* ADMIN */
+
+function updateAdmin(){
+
+document.getElementById("statOrders")
+.innerText = orders.length;
+
+let revenue =
+orders.reduce((sum,o) =>
+sum + o.total,0);
+
+document.getElementById("statRevenue")
+.innerText =
+"₹" + revenue.toFixed(0);
+
+document.getElementById("statFoods")
+.innerText =
+foods.length;
+
+document.getElementById("statCustomers")
+.innerText =
+users.length;
+
+let container =
+document.getElementById("adminOrders");
+
+container.innerHTML =
+orders.slice(0,10).map(order => `
+
+<div class="order-card">
+
+<strong>Order #${order.id}</strong>
+
+<p>User: ${order.user}</p>
+
+<p>Total: ₹${order.total.toFixed(2)}</p>
+
+<p>Status: ${order.status}</p>
+
+</div>
+
+`).join("") ||
+"<p>No orders available.</p>";
+
+}
+
+
+/* DARK MODE */
+
+function toggleDark(){
+
+document.body.classList.toggle("dark");
+
+localStorage.setItem(
+"foodDark",
+document.body.classList.contains("dark")
+);
+
+}
+
+
+/* STORAGE */
+
+function saveData(){
+
+localStorage.setItem(
+"foodCart",
+JSON.stringify(cart)
+);
+
+localStorage.setItem(
+"foodOrders",
+JSON.stringify(orders)
+);
+
+localStorage.setItem(
+"foodFavorites",
+JSON.stringify(favorites)
+);
+
+}
+
+
+/* START */
+
+if(localStorage.getItem("foodDark") === "true"){
+
+document.body.classList.add("dark");
+
+}
+
+updateCartCount();
+
+if(currentUser){
+
+startApp();
+
+}
+
+</script>
+
+</body>
+</html>
